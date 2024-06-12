@@ -1,6 +1,6 @@
 import sqlite3
 import libuser
-
+import hashlib
 
 def login(username, password):
 
@@ -21,8 +21,8 @@ def create(username, password):
 
     conn = sqlite3.connect('db_users.sqlite')
     c = conn.cursor()
-
-    c.execute("INSERT INTO users (username, password, failures, mfa_enabled, mfa_secret) VALUES ('%s', '%s', '%d', '%d', '%s')" %(username, password, 0, 0, ''))
+    gravatar = hashlib.md5(username.encode()).hexdigest()
+    c.execute("INSERT INTO users (username, password, failures, mfa_enabled, mfa_secret, gravatar) VALUES (?, ?, ?, ?, ?, ?)", (username, password, 0, 0, '', gravatar))
 
     conn.commit()
     conn.close()
